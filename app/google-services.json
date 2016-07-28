@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "331181346483",
+    "firebase_url": "https://ashi-3be1f.firebaseio.com",
+    "project_id": "ashi-3be1f",
+    "storage_bucket": "ashi-3be1f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331181346483:android:8d35e90d0c240a2e",
+        "android_client_info": {
+          "package_name": "com.gainstudy.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331181346483-s7v8rmd2ht83jtqq1or527rnk41nqte7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gainstudy.demo",
+            "certificate_hash": "23B3D2D221851E3A8B2745E7AE7F259ED2F66EEA"
+          }
+        },
+        {
+          "client_id": "331181346483-facahndpsb2cdis032boreauu8blfdd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0fZgaytOO0GFauuK_F24rBD95kTqDEeM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331181346483-facahndpsb2cdis032boreauu8blfdd6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
