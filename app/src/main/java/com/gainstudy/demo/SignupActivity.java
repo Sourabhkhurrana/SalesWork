@@ -1,17 +1,23 @@
 package com.gainstudy.demo;
 
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,26 +33,41 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
+import static com.gainstudy.demo.R.id.btn_gotoLogin;
+
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputname, inputcontact, inputaddress, inputcity, inputpincode,
+    private EditText inputFirstname, inputLastname, inputcontact, inputaddress, inputcity, inputpincode,
             inputstate, inputemail, inputpassword, inputconfirmpassword;
-    private Button btn_registerNow;
+    private Button btn_registerNow, btn_gotoLogin;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
-    public static final String MESSAGES_CHILD = "profile";
+    private static final String MESSAGES_CHILD = "profile";
     private FirebaseAuth.AuthStateListener authListener;
+    private Utility utility;
+    private String mobileNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+
+        setContentView(R.layout.activity_signup);
 
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
+        utility = new Utility();
 
-        inputname = (EditText) findViewById(R.id.input_name);
+        btn_gotoLogin = (Button) findViewById(R.id.btn_gotoLogin);
+        inputFirstname = (EditText) findViewById(R.id.input_FirstName);
+        inputLastname = (EditText) findViewById(R.id.input_Lastname);
         inputcontact = (EditText) findViewById(R.id.input_contactNo);
         inputaddress = (EditText) findViewById(R.id.input_address);
         inputcity = (EditText) findViewById(R.id.input_city);
@@ -74,13 +95,22 @@ public class SignupActivity extends AppCompatActivity {
                 // ...
             }
         };
+        btn_gotoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(SignUpActivity.this, "Login Activity",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
     }
 
     public void onclick(final View v) {
 
         final DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        final String name = inputname.getText().toString().trim();
+        final String FirstName = inputFirstname.getText().toString().trim();
+        final String LastName = inputLastname.getText().toString().trim();
         final String phone = inputcontact.getText().toString().trim();
         final String address = inputaddress.getText().toString().trim();
         final String city = inputcity.getText().toString().trim();
@@ -91,157 +121,166 @@ public class SignupActivity extends AppCompatActivity {
         final String confirm_password = inputconfirmpassword.getText().toString().trim();
 
 
+        int status = 0;
+        if (FirstName.length() < 2) {
 
-            int status = 0;
-            if (name.length() < 2) {
+            status = 1;
+            Snackbar.make(v, "Must Enter Name !", Snackbar.LENGTH_LONG).show();
+            inputFirstname.setError("Input name");
+        } else if (phone.length() < 10) {
+            status = 1;
+            Snackbar.make(v, "Enter Valid 10 Digit Contact No ! ", Snackbar.LENGTH_LONG).show();
+            inputcontact.setError("enter valid Contact No.");
 
-                status = 1;
-                Snackbar.make(v, "Must Enter Name !", Snackbar.LENGTH_LONG).show();
-                inputname.setError("Input name");
-            }
-            else if (phone.length() < 10) {
-                status = 1;
-                Snackbar.make(v, "Enter Valid 10 Digit Contact No ! ", Snackbar.LENGTH_LONG).show();
-                inputcontact.setError("enter valid Contact No.");
+        } else if (address.length() < 1) {
+            status = 1;
+            Snackbar.make(v, "plese enter your address", Snackbar.LENGTH_LONG).show();
+            inputaddress.setError("plese enter your address");
+        } else if (city.length() < 3) {
+            status = 1;
+            Snackbar.make(v, "plese enter your valid city name", Snackbar.LENGTH_LONG).show();
+            inputcity.setError("plese enter your city");
+        } else if (pincode.length() != 6) {
+            status = 1;
+            Snackbar.make(v, "plese enter valid pincode", Snackbar.LENGTH_LONG).show();
+            inputpincode.setError("Please enter your valid pincode");
+        } else if (state.length() < 1) {
+            status = 1;
+            Snackbar.make(v, "plese enter your state", Snackbar.LENGTH_LONG).show();
+            inputstate.setError("please enter details");
+        } else if ((email.length() < 4) || (!email.contains("@"))) {
+            status = 1;
+            Snackbar.make(v, "Enter Valid Email !", Snackbar.LENGTH_LONG).show();
 
-            }
-            else if (address.length()<1) {
-                status = 1;
-                Snackbar.make(v, "plese enter your address", Snackbar.LENGTH_LONG).show();
-                inputaddress.setError("plese enter your address");
-            }
-            else if (city.length()<3) {
-                status = 1;
-                Snackbar.make(v, "plese enter your valid city name", Snackbar.LENGTH_LONG).show();
-                inputcity.setError("plese enter your city");
-            }
-            else if (pincode.length()!=6) {
-                status = 1;
-                Snackbar.make(v, "plese enter valid pincode", Snackbar.LENGTH_LONG).show();
-                inputpincode.setError("Please enter your valid pincode");
-            }
-            else if (state.length()<1) {
-                status = 1;
-                Snackbar.make(v, "plese enter your state", Snackbar.LENGTH_LONG).show();
-                inputstate.setError("please enter details");
-            }
-            else if ((email.length() < 4) || (!email.contains("@"))) {
-                status = 1;
-                Snackbar.make(v, "Enter Valid Email !", Snackbar.LENGTH_LONG).show();
+        } else if (password.length() < 6) {
+            status = 1;
+            Snackbar.make(v, "Password Length Must Be Greater Than 5 ", Snackbar.LENGTH_LONG).show();
+        } else if (!password.equals(confirm_password)) {
+            status = 1;
+            Snackbar.make(v, "Confirm Password Not Match !", Snackbar.LENGTH_LONG).show();
+        }
+        if (status == 0) {
+            progressBar.setVisibility(ProgressBar.VISIBLE);
+            Control_Disable();
 
-            }
-
-            else if(password.length() <6)
-            {
-                status = 1;
-                Snackbar.make(v, "Password Length Must Be Greater Than 5 ", Snackbar.LENGTH_LONG).show();
-            }
-            else if (!password.equals(confirm_password)) {
-                status = 1;
-                Snackbar.make(v, "Confirm Password Not Match !", Snackbar.LENGTH_LONG).show();
-            }
-            if (status == 0) {
-                progressBar.setVisibility(ProgressBar.VISIBLE);
-                Control_Disable();
-
-                Query query = mFirebaseDatabaseReference.child("profile").orderByChild("phone").equalTo(phone.trim());
-                query.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
-
-                        if (dataSnapshot.getChildrenCount() > 0) {
-
-                            for(DataSnapshot child: dataSnapshot.getChildren()) {
-                                Object object = child.getValue();
-                                Log.e("Register ", ((Map)object).get("phone").toString());
-                                Log.e("Register ", ((Map)object).get("email").toString());
-                                Log.e("Register ", ((Map)object).get("uid").toString());
-
-                            }
-                            Snackbar.make(v, "Already Registered", Snackbar.LENGTH_LONG).show();
-                            progressBar.setVisibility(ProgressBar.INVISIBLE);
-                            Control_Enable();
-                        } else {
+            final char[] mobile = phone.toCharArray();
+            mobileNo = mobile[mobile.length-4]+""+mobile[mobile.length-3]+""+mobile[mobile.length-2]+""+mobile[mobile.length-1];
 
 
-                            auth.createUserWithEmailAndPassword(email, password)
-                                    .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            //Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+            Query query = mFirebaseDatabaseReference.child("profile").orderByChild("phone").equalTo(phone);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
 
-                                            // If sign in fails, display a message to the user. If sign in succeeds
-                                            // the auth state listener will be notified and logic to handle the
-                                            // signed in user can be handled in the listener.
-                                            if (!task.isSuccessful()) {
-                                                String Result = String.valueOf(task.getException());
-                                                if (Result.contains("email")) {
-                                                    Snackbar.make(v, "Email Already Exist !", Snackbar.LENGTH_LONG).show();
+                                                if (dataSnapshot.getChildrenCount() > 0) {
+
+                                                    /*for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                        Object object = child.getValue();
+                                                        Log.e("Register ", ((Map) object).get("phone").toString());
+                                                        Log.e("Register ", ((Map) object).get("email").toString());
+                                                        Log.e("Register ", ((Map) object).get("uid").toString());
+                                                    }*/
+                                                    //Snackbar.make(v, "Already Registered", Snackbar.LENGTH_LONG).show();
+                                                    Toast.makeText(SignupActivity.this," Mobile Number Already Registered",Toast.LENGTH_SHORT).show();
                                                     progressBar.setVisibility(ProgressBar.INVISIBLE);
                                                     Control_Enable();
-
                                                 } else {
-                                                    Snackbar.make(v, "No Internet !"+Result, Snackbar.LENGTH_LONG).show();
-                                                    progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                                    Control_Enable();
+
+                                                    auth.createUserWithEmailAndPassword(email, password)
+                                                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                                                            //Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                                                                            // If sign in fails, display a message to the user. If sign in succeeds
+                                                                            // the auth state listener will be notified and logic to handle the
+                                                                            // signed in user can be handled in the listener.
+
+                                                                            if (!task.isSuccessful()) {
+                                                                                String Result = String.valueOf(task.getException());
+                                                                                Snackbar.make(v, "The email address is already in use by another account.", Snackbar.LENGTH_INDEFINITE)
+                                                                                        .setAction("ok", new View.OnClickListener() {
+                                                                                            @Override
+                                                                                            public void onClick(View view) {
+                                                                                                inputemail.setError("Please use another email account");
+                                                                                            }
+                                                                                        }).show();
+                                                                                Log.d("Authentication Failed", Result);
+                                                                                Control_Enable();
+                                                                                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                                                            } else {
+                                                                                final RegistrationValues Values = new RegistrationValues();
+                                                                                Values.setFirstName(FirstName);
+                                                                                Values.setLastName(LastName);
+                                                                                Values.setEmail(email);
+                                                                                Values.setPhone(phone);
+                                                                                Values.setAddress(address);
+                                                                                Values.setCity(city);
+                                                                                Values.setPincode(pincode);
+                                                                                Values.setState(state);
+                                                                                Values.setIndex(0);
+                                                                                Values.setLevel(3);
+
+                                                                                Values.setUserId(FirstName.toUpperCase().trim() + "" + mobileNo);
+                                                                                Values.setUid(auth.getCurrentUser().getUid());
+                                                                                String Uid = auth.getCurrentUser().getUid();
+
+                                                                                try {
+                                                                                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(Uid).setValue(Values);
+                                                                                } catch (Exception e) {
+                                                                                    Log.e("Erorrrr ", e.getMessage());
+                                                                                }
+                                                                                Snackbar.make(v, "Registration Done !", Snackbar.LENGTH_LONG).show();
+                                                                                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                                                                // Control_Enable();
+
+                                                                                new AlertDialog.Builder(SignupActivity.this)
+                                                                                        .setTitle("Thank You for Registration")
+                                                                                        .setCancelable(false)
+                                                                                        .setMessage("Your Customer Id is "+FirstName.toUpperCase()
+                                                                                                +""+mobileNo+"\nClick Yes to proceed for further...")
+                                                                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                                                startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                                                                                finish();
+                                                                                            }
+                                                                                        })
+                                                                                        .setIcon(android.R.drawable.sym_def_app_icon)
+                                                                                        .show();
+
+                                                                            }
+
+                                                                        }
+                                                                    }
+
+                                                            );
+
+                                                    //Control_Enable();
 
                                                 }
-                                            } else {
-                                                final RegistrationValues Values = new RegistrationValues();
-                                                Values.setName(name);
-                                                Values.setEmail(email);
-                                                Values.setPhone(phone);
-                                                Values.setAddress(address);
-                                                Values.setCity(city);
-                                                Values.setPincode(pincode);
-                                                Values.setState(state);
-                                                Values.setUid(auth.getCurrentUser().getUid());
-                                                String Uid=auth.getCurrentUser().getUid();
+                                            }
 
-                                                try {
-                                                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(Uid).setValue(Values);
-                                                }
-                                                catch (Exception e)
-                                                {
-                                                    Log.e("Erorrrr ",e.getMessage());
-                                                }
-                                                Snackbar.make(v, "Registration Done !", Snackbar.LENGTH_LONG).show();
-                                                progressBar.setVisibility(ProgressBar.INVISIBLE);
-
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                Log.e("DEBUGTAG", "NOT DONE " + databaseError.getMessage());
+                                                Snackbar.make(v, "Process Failed", Snackbar.LENGTH_LONG).show();
                                                 progressBar.setVisibility(ProgressBar.INVISIBLE);
                                                 Control_Enable();
 
-                                                startActivity(new Intent(SignupActivity.this,MainActivity.class));
-                                                finish();
                                             }
-
-                                            // ...
                                         }
-                                    });
-                            Control_Enable();
 
-                        }
-                    }
+            );
 
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e("DEBUGTAG", "NOT DONE " + databaseError.getMessage());
-                        Snackbar.make(v, "Process Failed", Snackbar.LENGTH_LONG).show();
-                        progressBar.setVisibility(ProgressBar.INVISIBLE);
-                        Control_Enable();
-
-                    }
-                });
-
-            }
         }
+    }
 
     // Enable==false all tools lable Editboxes buttons..
+
     public void Control_Disable() {
         inputemail.setEnabled(false);
         inputaddress.setEnabled(false);
-        inputname.setEnabled(false);
+        inputFirstname.setEnabled(false);
+        inputLastname.setEnabled(false);
         inputpassword.setEnabled(false);
         inputcontact.setEnabled(false);
         inputstate.setEnabled(false);
@@ -250,13 +289,15 @@ public class SignupActivity extends AppCompatActivity {
         inputconfirmpassword.setEnabled(false);
         btn_registerNow.setEnabled(true);
         btn_registerNow.setVisibility(Button.INVISIBLE);
+        btn_gotoLogin.setEnabled(false);
     }
 
     // Enable==true all tools lable Editboxes buttons..
     public void Control_Enable() {
         inputemail.setEnabled(true);
         inputaddress.setEnabled(true);
-        inputname.setEnabled(true);
+        inputFirstname.setEnabled(true);
+        inputLastname.setEnabled(true);
         inputpassword.setEnabled(true);
         inputcontact.setEnabled(true);
         inputstate.setEnabled(true);
@@ -265,6 +306,8 @@ public class SignupActivity extends AppCompatActivity {
         inputconfirmpassword.setEnabled(true);
         btn_registerNow.setEnabled(true);
         btn_registerNow.setVisibility(Button.VISIBLE);
+        btn_gotoLogin.setEnabled(true);
+
     }
 
     @Override
@@ -273,13 +316,6 @@ public class SignupActivity extends AppCompatActivity {
         auth.addAuthStateListener(authListener);
     }
 }
-
-
-
-
-
-
-
 
 
 //        String email = inputemail.getText().toString().trim();

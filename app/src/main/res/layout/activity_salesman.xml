@@ -1,51 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_signup"
+    android:id="@+id/activity_salesman"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#059ce6"
-    tools:context="com.gainstudy.demo.SignupActivity">
+    android:background="@color/bg_login"
+    tools:context="com.gainstudy.demo.SalesmanActivity">
+
+    <ProgressBar
+        android:id="@+id/sample_progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/sample_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/firebase_image" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Register Now"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:typeface="serif" />
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="DATE"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+
+                <TextView
+                    android:id="@+id/salesman_DATE_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="AGENT NAME"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+
+                <TextView
+                    android:id="@+id/salesman_agentName_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="YOUR LOCATION"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+
+                <TextView
+                    android:id="@+id/salesman_Location_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="15sp"
+                    android:typeface="serif" />
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_FirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First Name*"
-                    android:inputType="text|textAutoComplete"
+                    android:hint="Name of the Brand*"
                     android:maxLines="1"
+                    android:inputType="text|textAutoComplete"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -56,12 +118,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_Lastname"
+                    android:id="@+id/salesman_personName_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last Name"
+                    android:hint="Contacted Person Name*"
                     android:maxLines="1"
-                    android:inputType="text|textAutoComplete"
+                    android:inputType="textPersonName|textAutoComplete"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -72,13 +134,13 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_contactNo"
+                    android:id="@+id/salesman_PhoneNo_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contact No.*"
-                    android:inputType="numberDecimal"
+                    android:hint="Contacted Person contact NO*"
+                    android:inputType="phone|textAutoComplete"
+                    android:maxLines="1"
                     android:maxLength="10"
-                    android:maxLines="1"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -89,12 +151,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_address"
+                    android:id="@+id/salesman_address_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Address*"
                     android:maxLines="1"
-                    android:inputType="text|textAutoComplete"
+                    android:inputType="text"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -105,12 +167,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_city"
+                    android:id="@+id/salesman_city_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="City*"
                     android:maxLines="1"
-                    android:inputType="text|textAutoComplete"
+                    android:inputType="text"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -121,11 +183,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_pincode"
+                    android:id="@+id/salesman_Pincode_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Pin Code*"
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"
                     android:textColor="@android:color/white"
@@ -138,12 +200,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_state"
+                    android:id="@+id/salesman_State_ET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="State*"
-                    android:inputType="text|textAutoComplete"
                     android:maxLines="1"
+                    android:inputType="text"
                     android:textColor="@android:color/white"
                     android:typeface="serif" />
 
@@ -154,7 +216,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_email"
+                    android:id="@+id/salesman_Email_Et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email*"
@@ -164,68 +226,15 @@
                     android:typeface="serif" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/input_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password*"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textColor="@android:color/white"
-                    android:typeface="serif" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/input_confirmPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirm Password*"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textColor="@android:color/white"
-                    android:typeface="serif" />
-
-            </android.support.design.widget.TextInputLayout>
-
             <Button
-                android:id="@+id/registerNow"
+                android:id="@+id/salesman_submit_BTN"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:onClick="onclick"
-                android:text="Register"
-                android:textAllCaps="false"
-                android:typeface="serif" />
-
-            <Button
-                android:id="@+id/btn_gotoLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dip"
-                android:background="@null"
-                android:text="@string/btn_link_to_login"
-                android:textAllCaps="false"
+                android:text="Submit"
                 android:textColor="@android:color/white"
-                android:textSize="15dp"
-                android:typeface="serif" />
+                android:background="@null"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:visibility="invisible" />
 
 </RelativeLayout>
